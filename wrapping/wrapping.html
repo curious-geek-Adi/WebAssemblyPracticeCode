@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>MY ASSEMBLY CODE</title>
+    <script type="text/javascript" src="wrapping.js"></script>
+</head>
+<body>
+    <h1>MY ASSEMBLY CODE</h1>
+    <script>
+        // this is the function definition (or) function pointer to execute
+        var addNums = Module.cwrap(
+            "addNums",
+            "number",
+            ["numnber","number"]
+            );
+
+        // this is the function definition (or) function pointer to execute
+        var subNums = Module.cwrap(
+            "subNums",
+            "number",
+            ["numnber","number"]
+        );
+
+
+
+        // it is event handler function through this we call our 
+        // exported c function when a particular event is occured
+        function run_wasm() {
+            var result = Module.ccall(
+                "main",
+                "number",
+                null,
+                null
+            );
+            console.log(result);
+
+            // define two input field in html and access the user input value from this field
+            var oneVal = document.getElementById("one").value;
+            var twoVal = document.getElementById("two").value;
+
+            var sumResult = Module.ccall(
+                "addNums",
+                "number",
+                ["number", "number"],
+                [oneVal, twoVal] // here we pass both variables value [var1, var2]
+            );
+            console.log("THIS IS SUMRESULT VALUE",sumResult);
+            
+            // After define function defintion/ function pointer 
+            // now we directly call by thier defined namespace
+            var myResult = addNums(oneVal, twoVal);
+            console.log("THIS IS MY RESULT VALUe",myResult);
+
+            // After define function defintion/ function pointer 
+            // now we directly call by thier defined namespace
+            var mySubResult = subNums(oneVal, twoVal);
+            console.log("THIS IS MY SUB RESULT VALUE",mySubResult);
+        }
+
+
+    </script>
+    <input type="number" id="one" />
+    <input type="number" id="two"/>
+    <button onclick="run_wasm()">click me</button>
+    
+</body>
+</html>
